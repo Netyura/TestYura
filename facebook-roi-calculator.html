@@ -354,7 +354,7 @@
             netProfitElement.className = 'result-value ' + (netProfit > 0 ? 'positive' : netProfit < 0 ? 'negative' : 'neutral');
 
             const roiElement = document.getElementById('roi');
-            roiElement.textContent = formatPercent(roi) + getBadge(roi);
+            roiElement.innerHTML = formatPercent(roi) + getBadge(roi);
             roiElement.className = 'result-value ' + (roi > 0 ? 'positive' : roi < 0 ? 'negative' : 'neutral');
 
             document.getElementById('roas').textContent = roas.toFixed(2) + 'x';
