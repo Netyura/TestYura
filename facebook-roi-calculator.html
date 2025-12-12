@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Калькулятор ROI Facebook реклами</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            padding: 40px;
+            max-width: 800px;
+            width: 100%;
+        }
+
+        h1 {
+            color: #333;
+            margin-bottom: 10px;
+            font-size: 28px;
+            text-align: center;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 14px;
+        }
+
+        .input-group {
+            margin-bottom: 25px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #333;
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        input[type="number"] {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 16px;
+            transition: all 0.3s ease;
+        }
+
+        input[type="number"]:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .calculate-btn {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            margin-top: 10px;
+        }
+
+        .calculate-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+        }
+
+        .calculate-btn:active {
+            transform: translateY(0);
+        }
+
+        .results {
+            margin-top: 30px;
+            padding: 25px;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            border-radius: 15px;
+            display: none;
+        }
+
+        .results.show {
+            display: block;
+            animation: slideIn 0.5s ease;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .result-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px;
+            margin-bottom: 10px;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .result-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .result-label {
+            font-weight: 600;
+            color: #333;
+            font-size: 15px;
+        }
+
+        .result-value {
+            font-size: 20px;
+            font-weight: 700;
+        }
+
+        .positive {
+            color: #10b981;
+        }
+
+        .negative {
+            color: #ef4444;
+        }
+
+        .neutral {
+            color: #667eea;
+        }
+
+        .info-text {
+            font-size: 12px;
+            color: #666;
+            margin-top: 5px;
+        }
+
+        .roi-badge {
+            display: inline-block;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            margin-left: 10px;
+        }
+
+        .roi-excellent {
+            background: #10b981;
+            color: white;
+        }
+
+        .roi-good {
+            background: #3b82f6;
+            color: white;
+        }
+
+        .roi-average {
+            background: #f59e0b;
+            color: white;
+        }
+
+        .roi-poor {
+            background: #ef4444;
+            color: white;
+        }
+
+        @media (max-width: 600px) {
+            .row {
+                grid-template-columns: 1fr;
+            }
+
+            .container {
+                padding: 25px;
+            }
+
+            h1 {
+                font-size: 24px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>📊 Калькулятор ROI Facebook реклами</h1>
+        <p class="subtitle">Розрахуйте окупність вашої рекламної кампанії</p>
+
+        <form id="roiForm">
+            <div class="row">
+                <div class="input-group">
+                    <label for="productPrice">💰 Ціна товару (грн)</label>
+                    <input type="number" id="productPrice" value="199" min="0" step="0.01" required>
+                </div>
+
+                <div class="input-group">
+                    <label for="costPrice">🏷️ Собівартість товару (грн)</label>
+                    <input type="number" id="costPrice" value="50" min="0" step="0.01" required>
+                    <p class="info-text">Скільки коштує вам виробництво/закупівля товару</p>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="input-group">
+                    <label for="adSpend">📢 Витрати на рекламу (грн)</label>
+                    <input type="number" id="adSpend" value="1000" min="0" step="0.01" required>
+                    <p class="info-text">Скільки ви витратили на Facebook рекламу</p>
+                </div>
+
+                <div class="input-group">
+                    <label for="sales">🛍️ Кількість продажів</label>
+                    <input type="number" id="sales" value="10" min="0" step="1" required>
+                    <p class="info-text">Кількість товарів, проданих завдяки рекламі</p>
+                </div>
+            </div>
+
+            <div class="input-group">
+                <label for="otherCosts">💳 Інші витрати (грн)</label>
+                <input type="number" id="otherCosts" value="0" min="0" step="0.01">
+                <p class="info-text">Доставка, пакування, комісії платіжних систем тощо (на одиницю товару)</p>
+            </div>
+
+            <button type="submit" class="calculate-btn">Розрахувати окупність</button>
+        </form>
+
+        <div id="results" class="results">
+            <div class="result-item">
+                <div>
+                    <div class="result-label">Загальний дохід</div>
+                </div>
+                <div class="result-value neutral" id="totalRevenue">0 грн</div>
+            </div>
+
+            <div class="result-item">
+                <div>
+                    <div class="result-label">Загальні витрати</div>
+                </div>
+                <div class="result-value neutral" id="totalCosts">0 грн</div>
+            </div>
+
+            <div class="result-item">
+                <div>
+                    <div class="result-label">Чистий прибуток</div>
+                </div>
+                <div class="result-value" id="netProfit">0 грн</div>
+            </div>
+
+            <div class="result-item">
+                <div>
+                    <div class="result-label">ROI (окупність інвестицій)</div>
+                </div>
+                <div class="result-value" id="roi">0%</div>
+            </div>
+
+            <div class="result-item">
+                <div>
+                    <div class="result-label">ROAS (Return on Ad Spend)</div>
+                    <p class="info-text">Скільки грн доходу на 1 грн реклами</p>
+                </div>
+                <div class="result-value neutral" id="roas">0x</div>
+            </div>
+
+            <div class="result-item">
+                <div>
+                    <div class="result-label">Вартість залучення клієнта (CPA)</div>
+                </div>
+                <div class="result-value neutral" id="cpa">0 грн</div>
+            </div>
+
+            <div class="result-item">
+                <div>
+                    <div class="result-label">Прибуток на продаж</div>
+                </div>
+                <div class="result-value neutral" id="profitPerSale">0 грн</div>
+            </div>
+
+            <div class="result-item">
+                <div>
+                    <div class="result-label">Рентабельність</div>
+                </div>
+                <div class="result-value" id="profitMargin">0%</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('roiForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            calculateROI();
+        });
+
+        // Автоматичний розрахунок при зміні значень
+        const inputs = document.querySelectorAll('input[type="number"]');
+        inputs.forEach(input => {
+            input.addEventListener('input', calculateROI);
+        });
+
+        function calculateROI() {
+            // Отримуємо значення
+            const productPrice = parseFloat(document.getElementById('productPrice').value) || 0;
+            const costPrice = parseFloat(document.getElementById('costPrice').value) || 0;
+            const adSpend = parseFloat(document.getElementById('adSpend').value) || 0;
+            const sales = parseInt(document.getElementById('sales').value) || 0;
+            const otherCosts = parseFloat(document.getElementById('otherCosts').value) || 0;
+
+            // Розрахунки
+            const totalRevenue = productPrice * sales;
+            const totalProductCosts = (costPrice + otherCosts) * sales;
+            const totalCosts = totalProductCosts + adSpend;
+            const netProfit = totalRevenue - totalCosts;
+            const roi = totalCosts > 0 ? ((netProfit / totalCosts) * 100) : 0;
+            const roas = adSpend > 0 ? (totalRevenue / adSpend) : 0;
+            const cpa = sales > 0 ? (adSpend / sales) : 0;
+            const profitPerSale = sales > 0 ? (netProfit / sales) : 0;
+            const profitMargin = totalRevenue > 0 ? ((netProfit / totalRevenue) * 100) : 0;
+
+            // Відображаємо результати
+            document.getElementById('totalRevenue').textContent = formatCurrency(totalRevenue);
+            document.getElementById('totalCosts').textContent = formatCurrency(totalCosts);
+
+            const netProfitElement = document.getElementById('netProfit');
+            netProfitElement.textContent = formatCurrency(netProfit);
+            netProfitElement.className = 'result-value ' + (netProfit > 0 ? 'positive' : netProfit < 0 ? 'negative' : 'neutral');
+
+            const roiElement = document.getElementById('roi');
+            roiElement.textContent = formatPercent(roi) + getBadge(roi);
+            roiElement.className = 'result-value ' + (roi > 0 ? 'positive' : roi < 0 ? 'negative' : 'neutral');
+
+            document.getElementById('roas').textContent = roas.toFixed(2) + 'x';
+            document.getElementById('cpa').textContent = formatCurrency(cpa);
+            document.getElementById('profitPerSale').textContent = formatCurrency(profitPerSale);
+
+            const profitMarginElement = document.getElementById('profitMargin');
+            profitMarginElement.textContent = formatPercent(profitMargin);
+            profitMarginElement.className = 'result-value ' + (profitMargin > 0 ? 'positive' : profitMargin < 0 ? 'negative' : 'neutral');
+
+            // Показуємо блок з результатами
+            document.getElementById('results').classList.add('show');
+        }
+
+        function formatCurrency(value) {
+            return value.toFixed(2) + ' грн';
+        }
+
+        function formatPercent(value) {
+            return value.toFixed(2) + '%';
+        }
+
+        function getBadge(roi) {
+            if (roi >= 100) {
+                return '<span class="roi-badge roi-excellent">Відмінно!</span>';
+            } else if (roi >= 50) {
+                return '<span class="roi-badge roi-good">Добре</span>';
+            } else if (roi >= 0) {
+                return '<span class="roi-badge roi-average">Середньо</span>';
+            } else {
+                return '<span class="roi-badge roi-poor">Збиток</span>';
+            }
+        }
+
+        // Початковий розрахунок
+        calculateROI();
+    </script>
+</body>
+</html>
